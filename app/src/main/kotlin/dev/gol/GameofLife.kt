@@ -1,4 +1,5 @@
-package org.example
+package dev.gol
+
 
 import java.io.File
 
@@ -6,6 +7,7 @@ typealias Line = CharArray
 typealias Matrix = Array<Line>
 
 class GameOfLife(
+    // primary constructor
     val width: Int = 150,
     val height: Int = 30,
     val patternFile: String = "./gol.txt",
@@ -13,11 +15,13 @@ class GameOfLife(
     private val alive = 'o' // █
     private val dead = ' '
 
+    // trailing lambda (if lambda is last param)
     private var front: Matrix = Array(height) { Line(width) { dead } }
     private var back: Matrix = Array(height) { Line(width) { dead } }
 
     private val sbFront = StringBuilder(width * height + height + 10)
 
+    // function that runs with the construction process
     init {
         loadPattern()
     }
@@ -33,8 +37,9 @@ class GameOfLife(
             seedRandom()
             return
         }
+        // lambda func is the only arg to forEachIndexed so we can drop the () entirely. trailing lamda after
         file.readLines().forEachIndexed { i, line ->
-            if (i >= height) return@forEachIndexed
+            if (i >= height) return@forEachIndexed  // bare return would return whole loadPattern func
             line.forEachIndexed { j, c ->
                 if (j < width && c != ' ' && c != '.') {
                     front[i][j] = alive
@@ -93,27 +98,3 @@ class GameOfLife(
         System.out.flush()
     }
 }
-
-fun main() {
-    clearScreen()
-    hideCursor()
-    Runtime.getRuntime().addShutdownHook(Thread {
-        showCursor()
-        clearScreen()
-    })
-
-    val gol = GameOfLife()
-    while (true) {
-        resetCursor()
-        gol.flushBuffer()
-        gol.step()
-        Thread.sleep(100)
-    }
-}
-
-fun clearScreen() = print("\u001B[2J\u001B[H")
-fun hideCursor() = print("\u001B[?25l")
-fun showCursor() = print("\u001B[?25h")
-fun resetCursor() = print("\u001B[H")
-
-
