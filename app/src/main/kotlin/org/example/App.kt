@@ -6,17 +6,17 @@ typealias Line = CharArray
 typealias Matrix = Array<Line>
 
 class GameOfLife(
-    val width: Int = 100,
-    val height: Int = 25,
+    val width: Int = 150,
+    val height: Int = 30,
     val patternFile: String = "./gol.txt",
 ) {
-    private val alive = '█'
+    private val alive = 'o' // █
     private val dead = ' '
 
     private var front: Matrix = Array(height) { Line(width) { dead } }
     private var back: Matrix = Array(height) { Line(width) { dead } }
 
-    private val sb = StringBuilder(width * height + height)
+    private val sbFront = StringBuilder(width * height + height + 10)
 
     init {
         loadPattern()
@@ -84,12 +84,12 @@ class GameOfLife(
     }
 
     fun flushBuffer() {
-        sb.setLength(0)
+        sbFront.setLength(0)
         for (i in 0..<height) {
-            sb.append(front[i])
-            sb.append('\n')
+            sbFront.append(front[i])
+            sbFront.append('\n')
         }
-        print(sb)
+        print(sbFront)
         System.out.flush()
     }
 }
